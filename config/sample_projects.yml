@@ -1,0 +1,14 @@
+global:
+  codebase_dir: /path/to/your/codebase
+  gcp_default_region: europe-west4
+
+projects:
+  - key: mypm
+    dir: mypm
+
+  - key: my_gcp_project
+    dir: my_gcp_project
+    gcp_project_id: my-gcp-project-id
+
+  - key: my_python_project
+    dir: my_python_project

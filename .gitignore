@@ -1,0 +1,5 @@
+config/projects.yml
+logs/
+bin/
+*.egg-info
+tmp/

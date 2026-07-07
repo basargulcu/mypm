@@ -13,6 +13,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "click>=8.4.2",
+    "environs>=15.0.1",
     "pyyaml>=6.0",
 ]
 
@@ -22,5 +23,6 @@ _mypm = "mypm.cli:main"
 [dependency-groups]
 dev = [
     "pre-commit>=4.6.0",
+    "pytest>=9.1.1",
     "ruff>=0.15.20",
 ]

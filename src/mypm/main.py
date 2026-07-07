@@ -9,10 +9,7 @@ from mypm.compiler.generators import (
     generate_main,
 )
 from mypm.installer.install import ZSHRC, _ZSHRC_MARKER, mypm_bin, zshrc_block
-
-ROOT = Path(__file__).parent.parent.parent
-DEFAULT_CONFIG = ROOT / "config" / "projects.yml"
-
+from mypm.settings import CONFIG_PATH, ROOT
 
 _VERSION_FILE = ROOT / "bin" / "latest" / ".version"
 
@@ -30,7 +27,7 @@ def increment_version(version: str) -> str:
     return "v" + ".".join(parts)
 
 
-def compile_version(version: str, config_path: Path):
+def compile_version(version: str, config_path: Path = CONFIG_PATH):
     with open(config_path) as f:
         config = yaml.safe_load(f)
 
@@ -58,7 +55,7 @@ def compile_version(version: str, config_path: Path):
     shutil.copytree(output_dir, latest_dir)
 
 
-def install(config_path: Path) -> bool:
+def install(config_path: Path = CONFIG_PATH) -> bool:
     with open(config_path) as f:
         config = yaml.safe_load(f)
 

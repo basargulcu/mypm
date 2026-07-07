@@ -1,12 +1,7 @@
 import click
 
-from mypm.main import (
-    DEFAULT_CONFIG,
-    compile_version,
-    get_latest_version,
-    increment_version,
-    install,
-)
+from mypm.main import compile_version, get_latest_version, increment_version, install
+from mypm.settings import CONFIG_PATH
 
 
 @click.group()
@@ -18,7 +13,7 @@ def cli():
 @click.argument("version", required=False, default=None)
 @click.option(
     "--config",
-    default=str(DEFAULT_CONFIG),
+    default=str(CONFIG_PATH),
     show_default=True,
     help="Path to projects.yml.",
 )
@@ -44,7 +39,7 @@ def _compile(version, config):
 @cli.command(name="install")
 @click.option(
     "--config",
-    default=str(DEFAULT_CONFIG),
+    default=str(CONFIG_PATH),
     show_default=True,
     help="Path to projects.yml.",
 )

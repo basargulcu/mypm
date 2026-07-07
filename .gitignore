@@ -3,3 +3,5 @@ logs/
 bin/
 *.egg-info
 tmp/
+__pycache__/
+*.pyc

@@ -5,4 +5,4 @@
 - ADDON cookiecutter python project initializer with uv, cli, environs, ruff, pre-commit, lint
 - newly created project should be added to config/projects.yml
 - ADDON new addon for installing applications
-- compile does not work on initial installation
+- ~~FIX: compile does not work on initial installation~~

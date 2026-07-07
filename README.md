@@ -8,6 +8,7 @@ This project, taking a yaml file, we compile to create shell scripts that will h
 - bin: compiled shell script assets, historic
 - bin/latest: latest compiled version
 - config: various configuration files that gets parsed by this application to create the assets
+- extensions: optional extension scripts that can be included during compilation
 
 ## How it works
 
@@ -15,6 +16,17 @@ This project, taking a yaml file, we compile to create shell scripts that will h
 - aliases
 - definitions
 - main
+
+### Extensions
+
+Place extension scripts in the `extensions/` folder. List the ones to include in `config/extensions.yml`:
+
+```yaml
+extensions:
+  - my_extension
+```
+
+Only extensions listed in `extensions.yml` will be picked up during compilation.
 
 ## How to run
 

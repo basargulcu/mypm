@@ -1,6 +1,6 @@
 import click
 
-from mypy.main import DEFAULT_CONFIG, compile_version, get_latest_version, increment_version, install
+from mypm.main import DEFAULT_CONFIG, compile_version, get_latest_version, increment_version, install
 
 
 @click.group()

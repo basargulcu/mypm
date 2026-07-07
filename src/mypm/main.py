@@ -3,12 +3,12 @@ from pathlib import Path
 
 import yaml
 
-from mypy.compiler.generators import (
+from mypm.compiler.generators import (
     generate_aliases,
     generate_definitions,
     generate_main,
 )
-from mypy.installer.install import ZSHRC, _ZSHRC_MARKER, mypm_bin, zshrc_block
+from mypm.installer.install import ZSHRC, _ZSHRC_MARKER, mypm_bin, zshrc_block
 
 ROOT = Path(__file__).parent.parent.parent
 DEFAULT_CONFIG = ROOT / "config" / "projects.yml"

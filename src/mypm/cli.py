@@ -1,6 +1,12 @@
 import click
 
-from mypm.main import DEFAULT_CONFIG, compile_version, get_latest_version, increment_version, install
+from mypm.main import (
+    DEFAULT_CONFIG,
+    compile_version,
+    get_latest_version,
+    increment_version,
+    install,
+)
 
 
 @click.group()
@@ -21,8 +27,12 @@ def _compile(version, config):
     if version is None:
         current = get_latest_version()
         if current is None:
-            raise click.UsageError("No existing version found. Please provide a version.")
-        overwrite = click.confirm(f"Overwrite latest version ({current})?", default=True)
+            raise click.UsageError(
+                "No existing version found. Please provide a version."
+            )
+        overwrite = click.confirm(
+            f"Overwrite latest version ({current})?", default=True
+        )
         version = current if overwrite else increment_version(current)
 
     config_path = click.Path(exists=True)(config)

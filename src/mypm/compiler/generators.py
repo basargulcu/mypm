@@ -13,7 +13,7 @@ def generate_definitions(config):
     lines.append("typeset -A project_dirs")
     for p in projects:
         key_upper = p["key"].upper()
-        lines.append(f'project_dirs[{p["key"]}]=${{{key_upper}_DIR}}')
+        lines.append(f"project_dirs[{p['key']}]=${{{key_upper}_DIR}}")
 
     lines.append("")
     lines.append("# Mappings")
@@ -172,8 +172,5 @@ alias coffee="echo '# caffeinate -di'; caffeinate -di"
     return (
         'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n'
         "\n"
-        "# Projects\n"
-        + project_lines
-        + "\n"
-        + static
+        "# Projects\n" + project_lines + "\n" + static
     )

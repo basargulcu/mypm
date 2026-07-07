@@ -4,7 +4,7 @@
 This project, taking a yaml file, we compile to create shell scripts that will help us to perform our projects.
 
 ## Project Structure
-- src/mypy: project code root
+- src/mypm: project code root
 - bin: compiled shell script assets, historic
 - bin/latest: latest compiled version
 - config: various configuration files that gets parsed by this application to create the assets
@@ -30,23 +30,24 @@ cp config/sample_projects.yml config/projects.yml
 
 ```
 uv sync
-uv pip install -e .
 ```
 
 ### 3. Compile
 
 ```
-uv run python src/mypy/main.py <version>
-```
-or
-```
-_mypy compile v0.0.2
+_mypm compile <version>
 ```
 
 Example:
 
 ```
-uv run python src/mypy/main.py v0.0.1
+_mypm compile v0.0.1
+```
+
+If no version is given, you will be prompted to overwrite the latest or auto-increment:
+
+```
+_mypm compile
 ```
 
 This writes the generated shell scripts to `bin/<version>/` and updates `bin/latest/`.

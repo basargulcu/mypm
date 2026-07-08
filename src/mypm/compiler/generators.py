@@ -1,3 +1,7 @@
+def shell_var_name(key: str) -> str:
+    return key.replace("-", "_").upper()
+
+
 def generate_definitions(config):
     g = config["global"]
     projects = config["projects"]
@@ -7,12 +11,12 @@ def generate_definitions(config):
     lines.append(f'export CODEBASE="{g["codebase_dir"]}"')
 
     for p in projects:
-        key_upper = p["key"].upper()
+        key_upper = shell_var_name(p["key"])
         lines.append(f'export {key_upper}_DIR="${{CODEBASE}}/{p["dir"]}"')
 
     lines.append("typeset -A project_dirs")
     for p in projects:
-        key_upper = p["key"].upper()
+        key_upper = shell_var_name(p["key"])
         lines.append(f"project_dirs[{p['key']}]=${{{key_upper}_DIR}}")
 
     lines.append("")

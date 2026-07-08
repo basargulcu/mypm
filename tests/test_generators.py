@@ -57,3 +57,15 @@ def test_generate_aliases_includes_project_aliases(config):
     result = generate_aliases(config)
     assert "alias mypm=" in result
     assert "alias myapp=" in result
+
+
+def test_generate_definitions_dash_in_key_produces_valid_shell_var():
+    config = {
+        "global": {"codebase_dir": "/home/user/code"},
+        "projects": [{"key": "my-project", "dir": "my-project"}],
+    }
+    result = generate_definitions(config)
+    # Shell variable names cannot contain dashes — MY-PROJECT_DIR is invalid.
+    # The export line must use an underscore: MY_PROJECT_DIR.
+    assert "export MY-PROJECT_DIR=" not in result
+    assert "export MY_PROJECT_DIR=" in result

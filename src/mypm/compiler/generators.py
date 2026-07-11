@@ -2,6 +2,20 @@ def shell_var_name(key: str) -> str:
     return key.replace("-", "_").upper()
 
 
+def generate_project_script(project: dict) -> str:
+    key = project["key"]
+    return f"""\
+unalias {key} 2>/dev/null
+{key}() {{
+    case "$1" in
+        *)
+            source ${{SCRIPT_DIR}}/main.sh {key} "$@"
+            ;;
+    esac
+}}
+"""
+
+
 def generate_definitions(config):
     g = config["global"]
     projects = config["projects"]
@@ -27,17 +41,6 @@ def generate_definitions(config):
             lines.append(f'gcp_project_ids[{p["key"]}]="{p["gcp_project_id"]}"')
 
     lines.append("# Misc")
-    lines.append("")
-
-    return "\n".join(lines)
-
-
-def generate_project_aliases(config):
-    projects = config["projects"]
-
-    lines = ['SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"', "", "# Project selector"]
-    for p in projects:
-        lines.append(f'alias {p["key"]}="source ${{SCRIPT_DIR}}/main.sh {p["key"]}"')
     lines.append("")
 
     return "\n".join(lines)
@@ -139,10 +142,7 @@ main $@
 
 def generate_aliases(config):
     projects = config["projects"]
-    project_lines = "\n".join(
-        f'alias {p["key"]}="source ${{SCRIPT_DIR}}/main.sh {p["key"]}"'
-        for p in projects
-    )
+    source_lines = "\n".join(f"source ${{SCRIPT_DIR}}/{p['key']}.sh" for p in projects)
 
     static = r"""
 # GCP
@@ -164,7 +164,7 @@ alias tf_init="terraform init"
 alias tf_plan="tf_init; terraform plan"
 
 # Custom
-alias help="cat $SCRIPT_DIR/alias.sh"
+alias help="cat $SCRIPT_DIR/aliases.sh"
 alias def="cat $SCRIPT_DIR/definitions.sh | grep DEFAULT"
 alias my="echo '# source ~/.zshrc'; source ~/.zshrc"
 alias py="echo '# source .venv/bin/activate'; source .venv/bin/activate"
@@ -176,5 +176,5 @@ alias coffee="echo '# caffeinate -di'; caffeinate -di"
     return (
         'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n'
         "\n"
-        "# Projects\n" + project_lines + "\n" + static
+        "# Projects\n" + source_lines + "\n" + static
     )

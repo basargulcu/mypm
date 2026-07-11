@@ -7,9 +7,10 @@ from mypm.compiler.generators import (
     generate_aliases,
     generate_definitions,
     generate_main,
+    generate_project_script,
 )
 from mypm.installer.install import ZSHRC, _ZSHRC_MARKER, mypm_bin, zshrc_block
-from mypm.settings import CONFIG_PATH, ROOT
+from mypm.settings import CONFIG_PATH, EXTENSIONS_CONFIG_PATH, ROOT
 
 _VERSION_FILE = ROOT / "bin" / "latest" / ".version"
 
@@ -31,6 +32,10 @@ def compile_version(version: str, config_path: Path = CONFIG_PATH):
     with open(config_path) as f:
         config = yaml.safe_load(f)
 
+    with open(EXTENSIONS_CONFIG_PATH) as f:
+        extensions_config = yaml.safe_load(f) or {}
+    enabled_extensions = extensions_config.get("extensions", [])
+
     output_dir = ROOT / "bin" / version
     latest_dir = ROOT / "bin" / "latest"
 
@@ -47,6 +52,20 @@ def compile_version(version: str, config_path: Path = CONFIG_PATH):
         path.write_text(content)
         if name == "main.sh":
             path.chmod(0o755)
+
+    for project in config["projects"]:
+        (output_dir / f"{project['key']}.sh").write_text(
+            generate_project_script(project)
+        )
+
+    if "gh_workflows" in enabled_extensions:
+        from mypm.compiler.extensions.gh_workflows import apply_gh_workflows
+
+        gh_config_path = ROOT / "config" / "gh_workflows.yml"
+        if gh_config_path.exists():
+            with open(gh_config_path) as f:
+                gh_config = yaml.safe_load(f)
+            apply_gh_workflows(config, gh_config, output_dir)
 
     (output_dir / ".version").write_text(version)
 

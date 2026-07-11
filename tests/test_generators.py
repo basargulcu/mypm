@@ -4,6 +4,7 @@ from mypm.compiler.generators import (
     generate_aliases,
     generate_definitions,
     generate_main,
+    generate_project_script,
 )
 
 
@@ -53,10 +54,31 @@ def test_generate_main_default_region():
     assert 'local region="europe-west4"' in result
 
 
-def test_generate_aliases_includes_project_aliases(config):
+def test_generate_aliases_sources_project_scripts(config):
     result = generate_aliases(config)
-    assert "alias mypm=" in result
-    assert "alias myapp=" in result
+    assert "source ${SCRIPT_DIR}/mypm.sh" in result
+    assert "source ${SCRIPT_DIR}/myapp.sh" in result
+
+
+def test_generate_aliases_no_inline_project_aliases(config):
+    result = generate_aliases(config)
+    assert 'alias mypm="source' not in result
+    assert 'alias myapp="source' not in result
+
+
+def test_generate_project_script_default_case():
+    project = {"key": "mypm", "dir": "mypm"}
+    result = generate_project_script(project)
+    assert "unalias mypm 2>/dev/null" in result
+    assert "mypm()" in result
+    assert 'case "$1" in' in result
+    assert "source ${SCRIPT_DIR}/main.sh mypm" in result
+
+
+def test_generate_project_script_passes_args():
+    project = {"key": "mypm", "dir": "mypm"}
+    result = generate_project_script(project)
+    assert '"$@"' in result
 
 
 def test_generate_definitions_dash_in_key_produces_valid_shell_var():

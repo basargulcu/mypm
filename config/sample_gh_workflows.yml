@@ -1,0 +1,12 @@
+gh_workflows:
+  my_gcp_project:
+    - name: deploy
+      workflow: deploy.yml
+      repo: my-org/my-gcp-project
+      inputs:
+        environment: production
+        branch: main
+  my_python_project:
+    - name: test
+      workflow: ci.yml
+      repo: my-org/my-python-project

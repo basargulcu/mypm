@@ -7,4 +7,5 @@
 - Extension for installing applications
 - ~~FIX: compile does not work on initial installation~~
 - ~~FIX: projects with dashes cause broken project dir definition~~
-- Extension for gh workflows
+- ~~Extension for gh workflows~~
+- Extension for mapping custom project actions to commands

@@ -72,8 +72,26 @@ def test_aliases_sources_snippet():
     assert "source ${SCRIPT_DIR}/myapp.sh" in result
 
 
-def test_project_script():
+def test_project_script_no_commands():
     result = _project_script({"key": "mypm", "dir": "mypm"})
     assert "unalias mypm 2>/dev/null" in result
     assert "mypm()" in result
+    assert 'case "$1" in' in result
     assert 'source ${SCRIPT_DIR}/main.sh mypm "$@"' in result
+
+
+def test_project_script_with_commands():
+    project = {
+        "key": "bartos",
+        "dir": "bartos",
+        "commands": [
+            {"name": "deploy", "cmd": "gh workflow run deploy.yml"},
+            {"name": "logs", "cmd": "gcloud logging read"},
+        ],
+    }
+    result = _project_script(project)
+    assert "deploy)" in result
+    assert "gh workflow run deploy.yml" in result
+    assert "logs)" in result
+    assert "gcloud logging read" in result
+    assert 'source ${SCRIPT_DIR}/main.sh bartos "$@"' in result

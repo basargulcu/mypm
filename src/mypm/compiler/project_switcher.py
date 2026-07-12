@@ -62,10 +62,18 @@ def aliases_sources_snippet() -> str:
 
 def _project_script(project: dict) -> str:
     key = project["key"]
+    commands = project.get("commands", [])
+    cases = ""
+    for cmd in commands:
+        cases += f"        {cmd['name']})\n            {cmd['cmd']}\n            ;;\n"
     return f"""\
 unalias {key} 2>/dev/null
 {key}() {{
-    source ${{SCRIPT_DIR}}/main.sh {key} "$@"
+    case "$1" in
+{cases}        *)
+            source ${{SCRIPT_DIR}}/main.sh {key} "$@"
+            ;;
+    esac
 }}
 """
 

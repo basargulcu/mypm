@@ -1,6 +1,6 @@
 import yaml
 
-from mypm.compiler import project_switcher
+from mypm.compiler import custom_aliases, project_switcher
 from mypm.settings import GLOBAL_CONFIG_PATH
 
 
@@ -116,7 +116,7 @@ def generate_main() -> str:
     return _generate_main(region)
 
 
-def _generate_aliases(sources_snippet: str) -> str:
+def _generate_aliases(sources_snippet: str, custom_aliases_snippet: str) -> str:
     static = r"""
 # GCP
 alias _adc="gcloud auth application-default login"
@@ -135,22 +135,19 @@ alias tf="cat ${SCRIPT_DIR}/alias.sh | grep tf_"
 alias tf_cd="cd ${BARTOS_DIR}/infra"
 alias tf_init="terraform init"
 alias tf_plan="tf_init; terraform plan"
-
-# Custom
-alias help="cat $SCRIPT_DIR/aliases.sh"
-alias def="cat $SCRIPT_DIR/definitions.sh | grep DEFAULT"
-alias my="echo '# source ~/.zshrc'; source ~/.zshrc"
-alias py="echo '# source .venv/bin/activate'; source .venv/bin/activate"
-alias cl="ollama launch claude"
-alias docker="podman"
-alias coffee="echo '# caffeinate -di'; caffeinate -di"
 """
-    return (
+    result = (
         'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n'
         "\n"
         "# Projects\n" + sources_snippet + "\n" + static
     )
+    if custom_aliases_snippet:
+        result += "\n" + custom_aliases_snippet + "\n"
+    return result
 
 
 def generate_aliases() -> str:
-    return _generate_aliases(project_switcher.aliases_sources_snippet())
+    return _generate_aliases(
+        project_switcher.aliases_sources_snippet(),
+        custom_aliases.aliases_snippet(),
+    )

@@ -20,12 +20,17 @@ def test_generate_main_type_based_routing():
 
 def test_generate_aliases_sources_projects():
     sources = "source ${SCRIPT_DIR}/mypm.sh\nsource ${SCRIPT_DIR}/myapp.sh"
-    result = _generate_aliases(sources)
+    result = _generate_aliases(sources, "")
     assert "source ${SCRIPT_DIR}/mypm.sh" in result
     assert "source ${SCRIPT_DIR}/myapp.sh" in result
 
 
 def test_generate_aliases_contains_static_aliases():
-    result = _generate_aliases("")
+    result = _generate_aliases("", "")
+    assert "alias adc=" in result
+    assert "alias tf_init=" in result
+
+
+def test_generate_aliases_includes_custom_snippet():
+    result = _generate_aliases("", '# Custom\nalias py="source .venv/bin/activate"')
     assert "alias py=" in result
-    assert "alias docker=" in result

@@ -1,0 +1,8 @@
+custom_aliases:
+  help: "cat $SCRIPT_DIR/aliases.sh"
+  def: "cat $SCRIPT_DIR/definitions.sh | grep DEFAULT"
+  my: "echo '# source ~/.zshrc'; source ~/.zshrc"
+  py: "echo '# source .venv/bin/activate'; source .venv/bin/activate"
+  cl: "ollama launch claude"
+  docker: "podman"
+  coffee: "echo '# caffeinate -di'; caffeinate -di"

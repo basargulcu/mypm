@@ -1,5 +1,6 @@
 config/projects.yml
 config/global.yml
+config/custom_aliases.yml
 logs/
 bin/
 *.egg-info

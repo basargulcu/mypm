@@ -9,5 +9,5 @@
 - ~~FIX: projects with dashes cause broken project dir definition~~
 - Extension for mapping custom project actions to commands
 - besides project_switcher.py add custom_commands which are not related to projects such as alias coffee="echo '# caffeinate -di'; caffeinate -di"
-- custom commands that are related to projects should be part of the projects.yml like gh call from that project
+- custom_project_commands that are related to projects should be part of the projects.yml like gh call from that project
 - after custom_command and custom_project_command implemented, we can also create a custom_command that will alias the custom_project_command for ease of use

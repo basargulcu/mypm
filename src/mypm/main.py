@@ -53,19 +53,35 @@ def compile_version(version: str, config_path: Path = CONFIG_PATH):
         if name == "main.sh":
             path.chmod(0o755)
 
-    for project in config["projects"]:
-        (output_dir / f"{project['key']}.sh").write_text(
-            generate_project_script(project)
-        )
+    all_cases: dict[str, list[dict]] = {}
 
     if "gh_workflows" in enabled_extensions:
-        from mypm.compiler.extensions.gh_workflows import apply_gh_workflows
+        from mypm.compiler.extensions.gh_workflows import get_cases as gh_get_cases
 
         gh_config_path = ROOT / "config" / "gh_workflows.yml"
         if gh_config_path.exists():
             with open(gh_config_path) as f:
                 gh_config = yaml.safe_load(f)
-            apply_gh_workflows(config, gh_config, output_dir)
+            for key, cases in gh_get_cases(config, gh_config).items():
+                all_cases.setdefault(key, []).extend(cases)
+
+    if "project_actions" in enabled_extensions:
+        from mypm.compiler.extensions.project_actions import (
+            get_cases as actions_get_cases,
+        )
+
+        actions_config_path = ROOT / "config" / "project_actions.yml"
+        if actions_config_path.exists():
+            with open(actions_config_path) as f:
+                actions_config = yaml.safe_load(f)
+            for key, cases in actions_get_cases(config, actions_config).items():
+                all_cases.setdefault(key, []).extend(cases)
+
+    for project in config["projects"]:
+        key = project["key"]
+        (output_dir / f"{key}.sh").write_text(
+            generate_project_script(project, all_cases.get(key))
+        )
 
     (output_dir / ".version").write_text(version)
 

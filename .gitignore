@@ -1,5 +1,6 @@
 config/projects.yml
 config/gh_workflows.yml
+config/project_actions.yml
 logs/
 bin/
 *.egg-info

@@ -17,7 +17,13 @@ def cli():
     show_default=True,
     help="Path to projects.yml.",
 )
-def _compile(version, config):
+@click.option(
+    "--silent",
+    is_flag=True,
+    default=False,
+    help="Overwrite latest version without prompting.",
+)
+def _compile(version, config, silent):
     """Compile projects.yml into shell scripts for VERSION."""
     if version is None:
         current = get_latest_version()
@@ -25,10 +31,13 @@ def _compile(version, config):
             raise click.UsageError(
                 "No existing version found. Please provide a version."
             )
-        overwrite = click.confirm(
-            f"Overwrite latest version ({current})?", default=True
-        )
-        version = current if overwrite else increment_version(current)
+        if silent:
+            version = current
+        else:
+            overwrite = click.confirm(
+                f"Overwrite latest version ({current})?", default=True
+            )
+            version = current if overwrite else increment_version(current)
 
     config_path = click.Path(exists=True)(config)
     click.echo(f"Compiling {version} from {config}...")

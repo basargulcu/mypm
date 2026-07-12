@@ -81,6 +81,20 @@ def test_generate_project_script_passes_args():
     assert '"$@"' in result
 
 
+def test_generate_project_script_with_cases():
+    project = {"key": "mypm", "dir": "mypm"}
+    cases = [
+        {"name": "compile", "command": "_mypm compile"},
+        {"name": "deploy", "command": "gh workflow run deploy.yml --repo org/mypm"},
+    ]
+    result = generate_project_script(project, cases)
+    assert "compile)" in result
+    assert "_mypm compile" in result
+    assert "deploy)" in result
+    assert "gh workflow run deploy.yml" in result
+    assert "source ${SCRIPT_DIR}/main.sh mypm" in result
+
+
 def test_generate_definitions_dash_in_key_produces_valid_shell_var():
     config = {
         "global": {"codebase_dir": "/home/user/code"},

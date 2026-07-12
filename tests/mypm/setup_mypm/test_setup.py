@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from mypm.setup.setup import _BIN_DIR, mypm_bin, zshrc_block
+from mypm.setup_mypm.setup import _BIN_DIR, mypm_bin, zshrc_block
 
 
 def test_mypm_bin_returns_package_bin_dir():

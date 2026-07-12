@@ -4,7 +4,7 @@ from mypm.main import (
     compile_version,
     get_latest_version,
     increment_version,
-    install_mypm,
+    setup_mypm,
 )
 from mypm.settings import CONFIG_PATH
 
@@ -51,16 +51,10 @@ def _compile(version, config, silent):
     click.echo("Done.")
 
 
-@cli.command(name="install")
-@click.option(
-    "--config",
-    default=str(CONFIG_PATH),
-    show_default=True,
-    help="Path to projects.yml.",
-)
-def _install_mypm():
+@cli.command(name="setup")
+def _setup_mypm():
     """Add mypm to .zshrc."""
-    added = install_mypm()  # type: ignore
+    added = setup_mypm()
     if added:
         click.echo("Installed. Restart your shell or run: source ~/.zshrc")
     else:

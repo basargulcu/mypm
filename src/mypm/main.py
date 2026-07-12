@@ -1,16 +1,8 @@
 import shutil
-from pathlib import Path
 
-import yaml
-
-from mypm.compiler.generators import (
-    generate_aliases,
-    generate_definitions,
-    generate_main,
-    generate_project_script,
-)
+from mypm.compiler import assembler, project_switcher
 from mypm.setup_mypm.setup import ZSHRC, _ZSHRC_MARKER, mypm_bin, zshrc_block
-from mypm.settings import CONFIG_PATH, ROOT
+from mypm.settings import ROOT
 
 _VERSION_FILE = ROOT / "bin" / "latest" / ".version"
 
@@ -28,30 +20,24 @@ def increment_version(version: str) -> str:
     return "v" + ".".join(parts)
 
 
-def compile_version(version: str, config_path: Path = CONFIG_PATH):
-    with open(config_path) as f:
-        config = yaml.safe_load(f)
-
+def compile_version(version: str):
     output_dir = ROOT / "bin" / version
     latest_dir = ROOT / "bin" / "latest"
 
-    output_dir.mkdir(parents=True, exist_ok=True)
+    if output_dir.exists():
+        shutil.rmtree(output_dir)
+    output_dir.mkdir(parents=True)
 
-    files = {
-        "definitions.sh": generate_definitions(config),
-        "main.sh": generate_main(config),
-        "aliases.sh": generate_aliases(config),
-    }
+    (output_dir / "definitions.sh").write_text(assembler.generate_definitions())
 
-    for name, content in files.items():
-        path = output_dir / name
-        path.write_text(content)
-        if name == "main.sh":
-            path.chmod(0o755)
+    main_sh = output_dir / "main.sh"
+    main_sh.write_text(assembler.generate_main())
+    main_sh.chmod(0o755)
 
-    for project in config["projects"]:
-        key = project["key"]
-        (output_dir / f"{key}.sh").write_text(generate_project_script(project))
+    (output_dir / "aliases.sh").write_text(assembler.generate_aliases())
+
+    for key, content in project_switcher.project_scripts():
+        (output_dir / f"{key}.sh").write_text(content)
 
     (output_dir / ".version").write_text(version)
 

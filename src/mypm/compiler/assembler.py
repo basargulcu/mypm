@@ -1,55 +1,20 @@
-def shell_var_name(key: str) -> str:
-    return key.replace("-", "_").upper()
+import yaml
+
+from mypm.compiler import project_switcher
+from mypm.settings import GLOBAL_CONFIG_PATH
 
 
-def generate_project_script(project: dict) -> str:
-    key = project["key"]
-    return f"""\
-unalias {key} 2>/dev/null
-{key}() {{
-    source ${{SCRIPT_DIR}}/main.sh {key} "$@"
-}}
-"""
+def _load_global() -> dict:
+    with open(GLOBAL_CONFIG_PATH) as f:
+        return yaml.safe_load(f) or {}
 
 
-def generate_definitions(config):
-    g = config["global"]
-    projects = config["projects"]
-
-    lines = ['SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"', ""]
-    lines.append("# Project DIRs")
-    lines.append(f'export CODEBASE="{g["codebase_dir"]}"')
-
-    for p in projects:
-        key_upper = shell_var_name(p["key"])
-        lines.append(f'export {key_upper}_DIR="${{CODEBASE}}/{p["dir"]}"')
-
-    lines.append("typeset -A project_dirs")
-    for p in projects:
-        key_upper = shell_var_name(p["key"])
-        lines.append(f"project_dirs[{p['key']}]=${{{key_upper}_DIR}}")
-
-    lines.append("")
-    lines.append("# Mappings")
-    lines.append("typeset -A project_types")
-    for p in projects:
-        if "type" in p:
-            lines.append(f'project_types[{p["key"]}]="{p["type"]}"')
-
-    lines.append("typeset -A gcp_project_ids")
-    for p in projects:
-        if "gcp_project_id" in p:
-            lines.append(f'gcp_project_ids[{p["key"]}]="{p["gcp_project_id"]}"')
-
-    lines.append("# Misc")
-    lines.append("")
-
-    return "\n".join(lines)
+def generate_definitions() -> str:
+    snippet = project_switcher.definitions_snippet()
+    return 'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n\n' + snippet
 
 
-def generate_main(config):
-    region = config["global"].get("gcp_default_region", "europe-west4")
-
+def _generate_main(region: str) -> str:
     return f"""\
 #!/bin/zsh
 
@@ -143,10 +108,13 @@ main $@
 """
 
 
-def generate_aliases(config):
-    projects = config["projects"]
-    source_lines = "\n".join(f"source ${{SCRIPT_DIR}}/{p['key']}.sh" for p in projects)
+def generate_main() -> str:
+    global_config = _load_global()
+    region = global_config.get("gcp_default_region", "europe-west4")
+    return _generate_main(region)
 
+
+def _generate_aliases(sources_snippet: str) -> str:
     static = r"""
 # GCP
 alias _adc="gcloud auth application-default login"
@@ -175,9 +143,12 @@ alias cl="ollama launch claude"
 alias docker="podman"
 alias coffee="echo '# caffeinate -di'; caffeinate -di"
 """
-
     return (
         'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n'
         "\n"
-        "# Projects\n" + source_lines + "\n" + static
+        "# Projects\n" + sources_snippet + "\n" + static
     )
+
+
+def generate_aliases() -> str:
+    return _generate_aliases(project_switcher.aliases_sources_snippet())

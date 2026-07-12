@@ -7,4 +7,7 @@ env.read_env()
 
 ROOT = Path(__file__).parent.parent.parent
 
+GLOBAL_CONFIG_PATH = env.path(
+    "MYPM_GLOBAL_CONFIG", default=ROOT / "config" / "global.yml"
+)
 CONFIG_PATH = env.path("MYPM_CONFIG", default=ROOT / "config" / "projects.yml")

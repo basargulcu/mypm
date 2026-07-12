@@ -2,24 +2,12 @@ def shell_var_name(key: str) -> str:
     return key.replace("-", "_").upper()
 
 
-def generate_project_script(project: dict, cases: list[dict] | None = None) -> str:
+def generate_project_script(project: dict) -> str:
     key = project["key"]
-    extra = ""
-    if cases:
-        lines = []
-        for c in cases:
-            lines.append(f"        {c['name']})")
-            lines.append(f"            {c['command']}")
-            lines.append("            ;;")
-        extra = "\n".join(lines) + "\n"
     return f"""\
 unalias {key} 2>/dev/null
 {key}() {{
-    case "$1" in
-{extra}        *)
-            source ${{SCRIPT_DIR}}/main.sh {key} "$@"
-            ;;
-    esac
+    source ${{SCRIPT_DIR}}/main.sh {key} "$@"
 }}
 """
 

@@ -8,6 +8,3 @@ env.read_env()
 ROOT = Path(__file__).parent.parent.parent
 
 CONFIG_PATH = env.path("MYPM_CONFIG", default=ROOT / "config" / "projects.yml")
-EXTENSIONS_CONFIG_PATH = env.path(
-    "MYPM_EXTENSIONS_CONFIG", default=ROOT / "config" / "extensions.yml"
-)

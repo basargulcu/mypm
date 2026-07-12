@@ -1,4 +1,0 @@
-project_actions:
-  mypm:
-    - name: compile
-      command: _mypm compile

@@ -66,33 +66,12 @@ def test_generate_aliases_no_inline_project_aliases(config):
     assert 'alias myapp="source' not in result
 
 
-def test_generate_project_script_default_case():
+def test_generate_project_script():
     project = {"key": "mypm", "dir": "mypm"}
     result = generate_project_script(project)
     assert "unalias mypm 2>/dev/null" in result
     assert "mypm()" in result
-    assert 'case "$1" in' in result
-    assert "source ${SCRIPT_DIR}/main.sh mypm" in result
-
-
-def test_generate_project_script_passes_args():
-    project = {"key": "mypm", "dir": "mypm"}
-    result = generate_project_script(project)
-    assert '"$@"' in result
-
-
-def test_generate_project_script_with_cases():
-    project = {"key": "mypm", "dir": "mypm"}
-    cases = [
-        {"name": "compile", "command": "_mypm compile"},
-        {"name": "deploy", "command": "gh workflow run deploy.yml --repo org/mypm"},
-    ]
-    result = generate_project_script(project, cases)
-    assert "compile)" in result
-    assert "_mypm compile" in result
-    assert "deploy)" in result
-    assert "gh workflow run deploy.yml" in result
-    assert "source ${SCRIPT_DIR}/main.sh mypm" in result
+    assert 'source ${SCRIPT_DIR}/main.sh mypm "$@"' in result
 
 
 def test_generate_definitions_dash_in_key_produces_valid_shell_var():

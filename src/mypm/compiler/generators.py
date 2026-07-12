@@ -31,6 +31,11 @@ def generate_definitions(config):
 
     lines.append("")
     lines.append("# Mappings")
+    lines.append("typeset -A project_types")
+    for p in projects:
+        if "type" in p:
+            lines.append(f'project_types[{p["key"]}]="{p["type"]}"')
+
     lines.append("typeset -A gcp_project_ids")
     for p in projects:
         if "gcp_project_id" in p:
@@ -68,14 +73,9 @@ manage_adc() {{
     fi
 }}
 
-is_gcp_project() {{
+get_project_type() {{
     local input_project_key="${{1}}"
-    local project_id=$(get_gcp_project_id $input_project_key)
-    if [[ -z "$project_id" ]]; then
-        echo "false"
-    else
-        echo "true"
-    fi
+    echo "${{project_types[$input_project_key]}}"
 }}
 
 activate_gcp_project() {{
@@ -123,13 +123,16 @@ init() {{
 main() {{
     init
 
-    local is_gcp_project=$(is_gcp_project $1)
-    case "$is_gcp_project" in
-        "true")
+    local project_type=$(get_project_type $1)
+    case "$project_type" in
+        terraform)
             activate_gcp_project $1
             ;;
-        *)
+        python)
             activate_python_project $1
+            ;;
+        *)
+            echo "Unknown project type: $project_type"
             ;;
     esac
 }}

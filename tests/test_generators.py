@@ -16,8 +16,13 @@ def config():
             "gcp_default_region": "us-central1",
         },
         "projects": [
-            {"key": "mypm", "dir": "mypm"},
-            {"key": "myapp", "dir": "myapp", "gcp_project_id": "my-gcp-id"},
+            {"key": "mypm", "dir": "mypm", "type": "python"},
+            {
+                "key": "myapp",
+                "dir": "myapp",
+                "type": "terraform",
+                "gcp_project_id": "my-gcp-id",
+            },
         ],
     }
 
@@ -33,6 +38,12 @@ def test_generate_definitions_exports_project_dirs(config):
     assert "export MYAPP_DIR=" in result
 
 
+def test_generate_definitions_project_types(config):
+    result = generate_definitions(config)
+    assert 'project_types[mypm]="python"' in result
+    assert 'project_types[myapp]="terraform"' in result
+
+
 def test_generate_definitions_gcp_project_ids(config):
     result = generate_definitions(config)
     assert 'gcp_project_ids[myapp]="my-gcp-id"' in result
@@ -41,6 +52,13 @@ def test_generate_definitions_gcp_project_ids(config):
 def test_generate_definitions_excludes_non_gcp(config):
     result = generate_definitions(config)
     assert "gcp_project_ids[mypm]" not in result
+
+
+def test_generate_main_type_based_routing(config):
+    result = generate_main(config)
+    assert "get_project_type" in result
+    assert "terraform)" in result
+    assert "python)" in result
 
 
 def test_generate_main_uses_region(config):

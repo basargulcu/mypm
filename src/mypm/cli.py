@@ -19,6 +19,7 @@ def cli():
 )
 @click.option(
     "--silent",
+    "-s",
     is_flag=True,
     default=False,
     help="Overwrite latest version without prompting.",

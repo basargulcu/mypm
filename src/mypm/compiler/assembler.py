@@ -18,6 +18,8 @@ def _generate_main(region: str) -> str:
     return f"""\
 #!/bin/zsh
 
+SUCCEED_MARKER=" \033[32m✅\033[0m"
+
 get_gcp_project_id() {{
     local input_project_key="${{1}}"
     echo "${{gcp_project_ids[$input_project_key]}}"
@@ -48,36 +50,36 @@ activate_gcp_project() {{
 
     echo -n "# Changing to $project_key directory..."
     cd ${{project_dirs[$project_key]}}
-    echo "DONE!"
+    echo "$SUCCEED_MARKER"
 
     echo -n "# Checking ADC..."
     manage_adc
-    echo "DONE!"
+    echo "$SUCCEED_MARKER"
 
     export GCP_PROJECT_ID=$(get_gcp_project_id $project_key)
     echo "# GCP_PROJECT_ID=${{GCP_PROJECT_ID}}"
 
     echo -n "# Setting gcloud config project to $GCP_PROJECT_ID... "
     gcloud config set project $GCP_PROJECT_ID > /dev/null 2>${{SCRIPT_DIR}}/logs/main.log
-    echo "DONE!"
+    echo "$SUCCEED_MARKER"
 
     export GCP_REGION=$(get_gcp_region)
     echo "# GCP_REGION=${{GCP_REGION}}"
 
     echo -n "# Setting gcloud config region to $GCP_REGION... "
     gcloud config set ai/region $GCP_REGION > /dev/null 2>>${{SCRIPT_DIR}}/logs/main.log
-    echo "DONE!"
+    echo "$SUCCEED_MARKER"
 }}
 
 activate_python_project() {{
     local project_key="$1"
-    echo -n "# Changing to $project_key directory..."
+    echo -n "# Changing to $project_key directory"
     cd ${{project_dirs[$project_key]}}
-    echo "DONE!"
+    echo "$SUCCEED_MARKER"
 
-    echo -n "# Activating python venv..."
-    py > /dev/null 2>>${{SCRIPT_DIR}}/logs/main.log
-    echo "DONE!"
+    echo -n "# Activating python venv"
+    source .venv/bin/activate > /dev/null 2>>${{SCRIPT_DIR}}/logs/main.log
+    echo "$SUCCEED_MARKER"
 }}
 
 init() {{

@@ -1,4 +1,5 @@
 config/projects.yml
+config/global.yml
 config/gh_workflows.yml
 config/project_actions.yml
 logs/

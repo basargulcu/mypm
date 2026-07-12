@@ -9,7 +9,7 @@ from mypm.compiler.generators import (
     generate_main,
     generate_project_script,
 )
-from mypm.installer.install import ZSHRC, _ZSHRC_MARKER, mypm_bin, zshrc_block
+from mypm.setup.setup import ZSHRC, _ZSHRC_MARKER, mypm_bin, zshrc_block
 from mypm.settings import CONFIG_PATH, ROOT
 
 _VERSION_FILE = ROOT / "bin" / "latest" / ".version"
@@ -60,11 +60,8 @@ def compile_version(version: str, config_path: Path = CONFIG_PATH):
     shutil.copytree(output_dir, latest_dir)
 
 
-def install(config_path: Path = CONFIG_PATH) -> bool:
-    with open(config_path) as f:
-        config = yaml.safe_load(f)
-
-    bin_path = mypm_bin(config)
+def install_mypm() -> bool:
+    bin_path = mypm_bin()
     block = zshrc_block(bin_path)
 
     existing = ZSHRC.read_text() if ZSHRC.exists() else ""

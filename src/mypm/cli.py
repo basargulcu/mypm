@@ -1,6 +1,11 @@
 import click
 
-from mypm.main import compile_version, get_latest_version, increment_version, install
+from mypm.main import (
+    compile_version,
+    get_latest_version,
+    increment_version,
+    install_mypm,
+)
 from mypm.settings import CONFIG_PATH
 
 
@@ -53,10 +58,9 @@ def _compile(version, config, silent):
     show_default=True,
     help="Path to projects.yml.",
 )
-def _install(config):
+def _install_mypm():
     """Add mypm to .zshrc."""
-    config_path = click.Path(exists=True)(config)
-    added = install(config_path)  # type: ignore
+    added = install_mypm()  # type: ignore
     if added:
         click.echo("Installed. Restart your shell or run: source ~/.zshrc")
     else:

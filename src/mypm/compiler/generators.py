@@ -81,6 +81,10 @@ is_gcp_project() {{
 activate_gcp_project() {{
     local project_key="$1"
 
+    echo -n "# Changing to $project_key directory..."
+    cd ${{project_dirs[$project_key]}}
+    echo "DONE!"
+
     echo -n "# Checking ADC..."
     manage_adc
     echo "DONE!"

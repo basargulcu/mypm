@@ -1,2 +1,2 @@
-codebase_dir: {path_to_codebase}
-gcp_default_region: {default gcp region ie. europe-west4}
+codebase_dir: /path/to/your/codebase
+gcp_default_region: europe-west4

@@ -139,6 +139,9 @@ alias tf_plan="tf_init; terraform plan"
     result = (
         'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n'
         "\n"
+        "# Imports"
+        "source ${SCRIPT_DIR}}/definitions.sh\n"
+        "\n"
         "# Projects\n" + sources_snippet + "\n" + static
     )
     if custom_aliases_snippet:

@@ -2,14 +2,15 @@
 - ~~remove project specific information from the sh files and place them in projects.yml before commit~~
 - ~~add pre-commit, ruff~~
 - ~~add lint~~
-- Extension cookiecutter python project initializer with uv, cli, environs, ruff, pre-commit, lint
-- newly created project should be added to config/projects.yml
-- Extension for installing applications
+- ~~Extension cookiecutter python project initializer with uv, cli, environs, ruff, pre-commit, lint~~
+- ~~newly created project should be added to config/projects.yml~~
 - ~~FIX: compile does not work on initial installation~~
 - ~~FIX: projects with dashes cause broken project dir definition~~
-- Extension for mapping custom project actions to commands
+- ~~Extension for mapping custom project actions to commands~~
 - ~~besides project_switcher.py add custom_commands which are not related to projects such as alias coffee="echo '# caffeinate -di'; caffeinate -di"~~
 - ~~custom_project_commands that are related to projects should be part of the projects.yml like gh call from that project~~
 - ~~after custom_command and custom_project_command implemented, we can also create a custom_command that will alias the custom_project_command for ease of use~~
 - ~~The jy did not work. Test setting up gh deploy-service deployment alias if it works~~
     - ~~deploy-services worked. More info needed~~
+- ~~custom definitions such as buckets~~
+- Extension for installing applications

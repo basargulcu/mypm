@@ -1,6 +1,6 @@
 import yaml
 
-from mypm.compiler import custom_aliases, project_switcher
+from mypm.compiler import custom_aliases, custom_definitions, project_switcher
 from mypm.settings import GLOBAL_CONFIG_PATH
 
 
@@ -9,9 +9,18 @@ def _load_global() -> dict:
         return yaml.safe_load(f) or {}
 
 
+def _generate_definitions(project_snippet: str, custom_snippet: str) -> str:
+    result = 'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n\n' + project_snippet
+    if custom_snippet:
+        result += "\n\n" + custom_snippet + "\n"
+    return result
+
+
 def generate_definitions() -> str:
-    snippet = project_switcher.definitions_snippet()
-    return 'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n\n' + snippet
+    return _generate_definitions(
+        project_switcher.definitions_snippet(),
+        custom_definitions.definitions_snippet(),
+    )
 
 
 def _generate_main(region: str) -> str:
@@ -139,8 +148,8 @@ alias tf_plan="tf_init; terraform plan"
     result = (
         'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n'
         "\n"
-        "# Imports"
-        "source ${SCRIPT_DIR}}/definitions.sh\n"
+        "# Imports\n"
+        "source ${SCRIPT_DIR}/definitions.sh\n"
         "\n"
         "# Projects\n" + sources_snippet + "\n" + static
     )

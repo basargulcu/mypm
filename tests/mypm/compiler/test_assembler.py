@@ -1,4 +1,19 @@
-from mypm.compiler.assembler import _generate_aliases, _generate_main
+from mypm.compiler.assembler import (
+    _generate_aliases,
+    _generate_definitions,
+    _generate_main,
+)
+
+
+def test_generate_definitions_includes_project_snippet():
+    result = _generate_definitions("# Project DIRs\nexport CODEBASE=/home", "")
+    assert "SCRIPT_DIR=" in result
+    assert "export CODEBASE=/home" in result
+
+
+def test_generate_definitions_includes_custom_snippet():
+    result = _generate_definitions("", '# Custom\nexport MY_VAR="val"')
+    assert 'export MY_VAR="val"' in result
 
 
 def test_generate_main_uses_region():

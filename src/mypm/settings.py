@@ -14,3 +14,6 @@ CONFIG_PATH = env.path("MYPM_CONFIG", default=ROOT / "config" / "projects.yml")
 CUSTOM_ALIASES_CONFIG_PATH = env.path(
     "MYPM_CUSTOM_ALIASES_CONFIG", default=ROOT / "config" / "custom_aliases.yml"
 )
+CUSTOM_DEFINITIONS_CONFIG_PATH = env.path(
+    "MYPM_CUSTOM_DEFINITIONS_CONFIG", default=ROOT / "config" / "custom_definitions.yml"
+)

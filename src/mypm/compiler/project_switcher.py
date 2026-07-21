@@ -42,9 +42,6 @@ def _definitions_snippet(global_config: dict, projects: list) -> str:
         if "gcp_project_id" in p:
             lines.append(f'gcp_project_ids[{p["key"]}]="{p["gcp_project_id"]}"')
 
-    lines.append("# Misc")
-    lines.append("")
-
     return "\n".join(lines)
 
 

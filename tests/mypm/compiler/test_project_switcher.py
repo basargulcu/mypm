@@ -12,11 +12,11 @@ def global_config():
 
 def projects():
     return [
-        {"key": "mypm", "dir": "mypm", "type": "python"},
+        {"key": "mypm", "dir": "mypm", "types": ["python"]},
         {
             "key": "myapp",
             "dir": "myapp",
-            "type": "terraform",
+            "types": ["terraform", "gcp"],
             "gcp_project_id": "my-gcp-id",
         },
     ]
@@ -44,12 +44,26 @@ def test_definitions_exports_project_dirs():
 def test_definitions_project_types():
     result = _definitions_snippet(global_config(), projects())
     assert 'project_types[mypm]="python"' in result
-    assert 'project_types[myapp]="terraform"' in result
+    assert 'project_types[myapp]="terraform gcp"' in result
 
 
 def test_definitions_gcp_project_ids():
     result = _definitions_snippet(global_config(), projects())
     assert 'gcp_project_ids[myapp]="my-gcp-id"' in result
+
+
+def test_definitions_gcp_regions():
+    projects_with_region = [
+        *projects(),
+    ]
+    projects_with_region[1] = {**projects_with_region[1], "gcp_region": "us-central1"}
+    result = _definitions_snippet(global_config(), projects_with_region)
+    assert 'gcp_regions[myapp]="us-central1"' in result
+
+
+def test_definitions_excludes_non_gcp_region():
+    result = _definitions_snippet(global_config(), projects())
+    assert "gcp_regions[mypm]" not in result
 
 
 def test_definitions_excludes_non_gcp():

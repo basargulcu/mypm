@@ -34,13 +34,18 @@ def _definitions_snippet(global_config: dict, projects: list) -> str:
     lines.append("# Mappings")
     lines.append("typeset -A project_types")
     for p in projects:
-        if "type" in p:
-            lines.append(f'project_types[{p["key"]}]="{p["type"]}"')
+        if "types" in p:
+            lines.append(f'project_types[{p["key"]}]="{" ".join(p["types"])}"')
 
     lines.append("typeset -A gcp_project_ids")
     for p in projects:
         if "gcp_project_id" in p:
             lines.append(f'gcp_project_ids[{p["key"]}]="{p["gcp_project_id"]}"')
+
+    lines.append("typeset -A gcp_regions")
+    for p in projects:
+        if "gcp_region" in p:
+            lines.append(f'gcp_regions[{p["key"]}]="{p["gcp_region"]}"')
 
     return "\n".join(lines)
 

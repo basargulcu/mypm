@@ -1,12 +1,16 @@
 projects:
   - key: mypm
     dir: mypm
-    type: python
+    types:
+      - python
 
   - key: my_gcp_project
     dir: my_gcp_project
-    type: terraform
+    types:
+      - terraform
+      - gcp
     gcp_project_id: my-gcp-project-id
+    gcp_region: europe-west4
     commands:
       - name: deploy
         cmd: gh workflow run deploy.yml --repo org/my_gcp_project
@@ -15,7 +19,8 @@ projects:
 
   - key: my_python_project
     dir: my_python_project
-    type: python
+    types:
+      - python
     commands:
       - name: test
         cmd: uv run pytest tests/

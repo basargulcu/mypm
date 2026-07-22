@@ -16,21 +16,17 @@ def test_generate_definitions_includes_custom_snippet():
     assert 'export MY_VAR="val"' in result
 
 
-def test_generate_main_uses_region():
-    result = _generate_main("us-central1")
-    assert 'local region="us-central1"' in result
-
-
-def test_generate_main_default_region():
-    result = _generate_main("europe-west4")
-    assert 'local region="europe-west4"' in result
-
-
 def test_generate_main_type_based_routing():
-    result = _generate_main("europe-west4")
-    assert "get_project_type" in result
+    result = _generate_main()
+    assert "get_project_types" in result
     assert "terraform)" in result
+    assert "gcp)" in result
     assert "python)" in result
+
+
+def test_generate_main_region_lookup_by_project_key():
+    result = _generate_main()
+    assert "gcp_regions[$input_project_key]" in result
 
 
 def test_generate_aliases_sources_projects():

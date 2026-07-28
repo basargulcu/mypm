@@ -1,6 +1,6 @@
 import shutil
 
-from mypm.compiler import assembler, project_switcher
+from mypm.compiler import assembler, helpers, project_switcher
 from mypm.setup_mypm.setup import ZSHRC, _ZSHRC_MARKER, mypm_bin, zshrc_block
 from mypm.settings import ROOT
 
@@ -34,6 +34,7 @@ def compile_version(version: str):
     main_sh.write_text(assembler.generate_main())
     main_sh.chmod(0o755)
 
+    (output_dir / "helpers.sh").write_text(helpers.generate_helpers())
     (output_dir / "aliases.sh").write_text(assembler.generate_aliases())
 
     for key, content in project_switcher.project_scripts():

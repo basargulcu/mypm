@@ -149,6 +149,7 @@ alias tf_plan="tf_init; terraform plan"
         "\n"
         "# Imports\n"
         "source ${SCRIPT_DIR}/definitions.sh\n"
+        "source ${SCRIPT_DIR}/helpers.sh\n"
         "\n"
         "# Projects\n" + sources_snippet + "\n" + static
     )

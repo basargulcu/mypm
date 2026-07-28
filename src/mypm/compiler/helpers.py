@@ -25,6 +25,7 @@ _resolve_log_level() {
 }
 
 fwrapper() {
+    local original_dir="$PWD"
     local cmd_args=()
     local log_level="silent"
     for arg in "$@"; do
@@ -37,6 +38,7 @@ fwrapper() {
         fi
     done
     _resolve_log_level "$log_level" "${cmd_args[@]}"
+    cd "$original_dir"
 }
 """
 

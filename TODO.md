@@ -14,3 +14,4 @@
     - ~~deploy-services worked. More info needed~~
 - ~~custom definitions such as buckets~~
 - Extension for installing applications
+- Check if gh has sync execution mode, if not, implement a method for sync mode in fwrapper
